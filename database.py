@@ -11,7 +11,7 @@ class DatabaseManager:
     def __del__(self):
         self.connection.close()
 
-    def _execute(self, statement: str, values=None):
+    def _execute(self, statement: str, values=None) -> sqlite3.Cursor:
         """Given an SQL statement and values, execute it, returning the cursor containing the result"""
         with self.connection:
             # Using `with` here ensures execution occurs as a transaction
