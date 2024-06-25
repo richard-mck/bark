@@ -38,3 +38,11 @@ class DatabaseManager:
             f"INSERT INTO {table_name} ({data_names}) VALUES ({placeholder_str})",
             data_values,
         )
+
+    def delete(self, table_name: str, data: dict[str, str]):
+        """Given a table name and a dict in the form `{$TYPE: $NAME}`, remove this data from the table"""
+        placeholder_str = [f"{data_name} = ?" for data_name in data.keys()]
+        delete_criteria = " AND ".join(placeholder_str)
+        self._execute(
+            f"DELETE FROM {table_name} WHERE {delete_criteria}", tuple(data.values())
+        )
