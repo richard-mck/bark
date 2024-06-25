@@ -28,3 +28,13 @@ class DatabaseManager:
         self._execute(
             f"CREATE TABLE IF NOT EXISTS {table_name}({', '.join(columns_with_types)});"
         )
+
+    def add(self, table_name: str, data: dict[str, str]):
+        """Given a table name and a dict in the form `{$TYPE: $NAME}`, add this data into the table"""
+        placeholder_str = ", ".join("?" * len(data))
+        data_names = ", ".join(data.keys())
+        data_values = tuple(data.values())
+        self._execute(
+            f"INSERT INTO {table_name} ({data_names}) VALUES ({placeholder_str})",
+            data_values,
+        )
