@@ -46,3 +46,24 @@ class DatabaseManager:
         self._execute(
             f"DELETE FROM {table_name} WHERE {delete_criteria}", tuple(data.values())
         )
+
+    def select(self, table_name: str, criteria=None, order_by=None) -> sqlite3.Cursor:
+        """
+        Search a given table for matching data
+        :param table_name: table to search within
+        :param criteria: optional dict in the form `{$TYPE: $NAME}`, columns to search and the values to search for
+        :param order_by: optional column to sort on
+        :return: SQLite Cursor
+        """
+        query = f"SELECT * FROM {table_name}"
+        if criteria:
+            placeholder_str = [
+                f"{criteria_name} = ?" for criteria_name in criteria.keys()
+            ]
+            select_criteria = " AND ".join(placeholder_str)
+            query += f" WHERE {select_criteria}"
+        order_placeholder = f" SORT BY {order_by}" if order_by else ""
+        return self._execute(
+            query + order_placeholder,
+            tuple(criteria.values()),
+        )
