@@ -30,3 +30,13 @@ class AddBookmarksCommand:
         data["date_added"] = datetime.utcnow().isoformat()
         db.add("bookmarks", data)
         return f"Successfully added '{data['title']}' to bookmarks"
+
+
+class ListBookmarksCommand:
+    """List all bookmarks in the DB, optionally sorting on a specific column"""
+
+    def __init__(self, order_by="date_added"):
+        self.order_by = order_by
+
+    def execute(self) -> list:
+        return db.select("bookmarks", None, self.order_by).fetchall()
