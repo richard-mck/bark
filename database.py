@@ -51,7 +51,11 @@ class DatabaseManager:
         placeholder_str = [f"{data_name} = ?" for data_name in data.keys()]
         delete_criteria = " AND ".join(placeholder_str)
         self._execute(
-            f"DELETE FROM {table_name} WHERE {delete_criteria}", tuple(data.values())
+            f"""
+            DELETE FROM {table_name}
+            WHERE {delete_criteria}
+            """,
+            tuple(data.values()),
         )
 
     def select(self, table_name: str, criteria=None, order_by=None) -> sqlite3.Cursor:
