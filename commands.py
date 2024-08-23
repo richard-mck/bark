@@ -1,3 +1,5 @@
+"""Commands to execute for the business logic layer"""
+
 from datetime import datetime
 
 from database import DatabaseManager
@@ -6,6 +8,8 @@ db = DatabaseManager("bookmarks.db")
 
 
 class CreateBookmarksTableCommand:
+    """Create the DB table for storing the user's bookmarks"""
+
     def execute(self):
         db.create_table(
             "bookmarks",
@@ -20,6 +24,8 @@ class CreateBookmarksTableCommand:
 
 
 class AddBookmarksCommand:
+    """Given a new bookmark, add this to the table with the current date and time"""
+
     def execute(self, data: dict[str, str]) -> str:
         data["date_added"] = datetime.utcnow().isoformat()
         db.add("bookmarks", data)
