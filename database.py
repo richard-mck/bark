@@ -26,7 +26,10 @@ class DatabaseManager:
             for column_name, column_type in columns.items()
         ]
         self._execute(
-            f"CREATE TABLE IF NOT EXISTS {table_name}({', '.join(columns_with_types)});"
+            f"""
+            CREATE TABLE IF NOT EXISTS {table_name}
+            ({', '.join(columns_with_types)});
+            """
         )
 
     def add(self, table_name: str, data: dict[str, str]):
@@ -35,7 +38,11 @@ class DatabaseManager:
         data_names = ", ".join(data.keys())
         data_values = tuple(data.values())
         self._execute(
-            f"INSERT INTO {table_name} ({data_names}) VALUES ({placeholder_str})",
+            f"""
+            INSERT INTO {table_name}
+            ({data_names})
+            VALUES ({placeholder_str})
+            """,
             data_values,
         )
 
