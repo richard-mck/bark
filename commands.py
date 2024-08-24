@@ -40,3 +40,11 @@ class ListBookmarksCommand:
 
     def execute(self) -> list:
         return db.select("bookmarks", None, self.order_by).fetchall()
+
+
+class DeleteBookmarksCommand:
+    """Delete a given bookmark using it's ID"""
+
+    def execute(self, data: str) -> str:
+        db.delete("bookmarks", {"id": data})
+        return "Deleted bookmark"
