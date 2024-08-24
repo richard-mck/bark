@@ -20,6 +20,21 @@ class Options:
         return self.display_name
 
 
+def print_options(options):
+    for shortcut, option in options.items():
+        print(f"({shortcut}) {option}")
+
+
 if __name__ == "__main__":
     print("Welcome to Bark!")
     commands.CreateBookmarksTableCommand().execute()
+    options = {
+        "A": Options("Add a bookmark", commands.AddBookmarksCommand()),
+        "L": Options("List bookmarks by date", commands.ListBookmarksCommand()),
+        "T": Options(
+            "List bookmarks by title", commands.ListBookmarksCommand(order_by="title")
+        ),
+        "D": Options("Delete bookmark", commands.DeleteBookmarksCommand()),
+        "Q": Options("Quit Bark", commands.QuitCommand()),
+    }
+    print_options(options)
