@@ -1,5 +1,6 @@
 """Commands to execute for the business logic layer"""
 
+import sys
 from datetime import datetime
 
 from database import DatabaseManager
@@ -48,3 +49,10 @@ class DeleteBookmarksCommand:
     def execute(self, data: str) -> str:
         db.delete("bookmarks", {"id": data})
         return "Deleted bookmark"
+
+
+class QuitCommand:
+    """End the programmes execution safely"""
+
+    def execute(self):
+        sys.exit()
