@@ -3,7 +3,7 @@
 import commands
 
 
-class Options:
+class Option:
     """Class to contain menu options for display"""
 
     def __init__(self, display_name: str, command, preparation=None):
@@ -29,12 +29,12 @@ if __name__ == "__main__":
     print("Welcome to Bark!")
     commands.CreateBookmarksTableCommand().execute()
     options = {
-        "A": Options("Add a bookmark", commands.AddBookmarksCommand()),
-        "L": Options("List bookmarks by date", commands.ListBookmarksCommand()),
-        "T": Options(
+        "A": Option("Add a bookmark", commands.AddBookmarksCommand()),
+        "L": Option("List bookmarks by date", commands.ListBookmarksCommand()),
+        "T": Option(
             "List bookmarks by title", commands.ListBookmarksCommand(order_by="title")
         ),
-        "D": Options("Delete bookmark", commands.DeleteBookmarksCommand()),
-        "Q": Options("Quit Bark", commands.QuitCommand()),
+        "D": Option("Delete bookmark", commands.DeleteBookmarksCommand()),
+        "Q": Option("Quit Bark", commands.QuitCommand()),
     }
     print_options(options)
