@@ -20,9 +20,21 @@ class Option:
         return self.display_name
 
 
-def print_options(options):
+def print_options(options: dict[str, Option]):
     for shortcut, option in options.items():
         print(f"({shortcut}) {option}")
+
+
+def user_choice_is_valid(choice: str, options: dict[str, Option]) -> bool:
+    return choice in options or choice.upper() in options
+
+
+def get_user_choice(options: dict[str, Option]):
+    user_choice = input("Please choose an option: ")
+    while not user_choice_is_valid(user_choice, options):
+        print("Invalid choice.")
+        user_choice = input("Please choose an option: ")
+    return options[user_choice.upper()]
 
 
 if __name__ == "__main__":
@@ -38,3 +50,5 @@ if __name__ == "__main__":
         "Q": Option("Quit Bark", commands.QuitCommand()),
     }
     print_options(options)
+    user_choice = get_user_choice(options)
+    user_choice.choose()
