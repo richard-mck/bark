@@ -1,5 +1,7 @@
 """The main CLI code for bark"""
 
+import os
+
 import commands
 
 
@@ -57,7 +59,13 @@ def get_new_bookmark_data() -> dict[str, str]:
     }
 
 
+def clear_screen():
+    clear_command = "cls" if os.name == "nt" else "clear"
+    os.system(clear_command)
+
+
 if __name__ == "__main__":
+    clear_screen()
     print("Welcome to Bark!")
     commands.CreateBookmarksTableCommand().execute()
     options = {
@@ -79,4 +87,5 @@ if __name__ == "__main__":
     }
     print_options(options)
     user_choice = get_user_choice(options)
+    clear_screen()
     user_choice.choose()
