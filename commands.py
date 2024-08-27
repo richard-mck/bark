@@ -11,7 +11,8 @@ db = DatabaseManager("bookmarks.db")
 class CreateBookmarksTableCommand:
     """Create the DB table for storing the user's bookmarks"""
 
-    def execute(self):
+    @staticmethod
+    def execute():
         db.create_table(
             "bookmarks",
             {
@@ -27,7 +28,8 @@ class CreateBookmarksTableCommand:
 class AddBookmarksCommand:
     """Given a new bookmark, add this to the table with the current date and time"""
 
-    def execute(self, data: dict[str, str]) -> str:
+    @staticmethod
+    def execute(data: dict[str, str]) -> str:
         data["date_added"] = datetime.utcnow().isoformat()
         db.add("bookmarks", data)
         return f"Successfully added '{data['title']}' to bookmarks"
@@ -46,7 +48,8 @@ class ListBookmarksCommand:
 class DeleteBookmarksCommand:
     """Delete a given bookmark using it's ID"""
 
-    def execute(self, data: str) -> str:
+    @staticmethod
+    def execute(data: str) -> str:
         db.delete("bookmarks", {"id": data})
         return "Deleted bookmark"
 
@@ -54,5 +57,6 @@ class DeleteBookmarksCommand:
 class QuitCommand:
     """End the programmes execution safely"""
 
-    def execute(self):
+    @staticmethod
+    def execute():
         sys.exit()
