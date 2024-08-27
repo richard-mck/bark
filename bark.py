@@ -61,12 +61,18 @@ if __name__ == "__main__":
     print("Welcome to Bark!")
     commands.CreateBookmarksTableCommand().execute()
     options = {
-        "A": Option("Add a bookmark", commands.AddBookmarksCommand()),
+        "A": Option(
+            "Add a bookmark", commands.AddBookmarksCommand(), preparation=add_bookmark
+        ),
         "L": Option("List bookmarks by date", commands.ListBookmarksCommand()),
         "T": Option(
             "List bookmarks by title", commands.ListBookmarksCommand(order_by="title")
         ),
-        "D": Option("Delete bookmark", commands.DeleteBookmarksCommand()),
+        "D": Option(
+            "Delete bookmark",
+            commands.DeleteBookmarksCommand(),
+            preparation=delete_bookmark,
+        ),
         "Q": Option("Quit Bark", commands.QuitCommand()),
     }
     print_options(options)
