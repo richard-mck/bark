@@ -64,10 +64,7 @@ def clear_screen():
     os.system(clear_command)
 
 
-if __name__ == "__main__":
-    clear_screen()
-    print("Welcome to Bark!")
-    commands.CreateBookmarksTableCommand().execute()
+def bark_loop():
     options = {
         "A": Option(
             "Add a bookmark",
@@ -89,3 +86,12 @@ if __name__ == "__main__":
     user_choice = get_user_choice(options)
     clear_screen()
     user_choice.choose()
+    _ = input("Press enter to return to menu")
+
+
+if __name__ == "__main__":
+    clear_screen()
+    print("Welcome to Bark!")
+    commands.CreateBookmarksTableCommand().execute()
+    while True:
+        bark_loop()
