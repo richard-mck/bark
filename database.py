@@ -66,6 +66,7 @@ class DatabaseManager:
         :param order_by: optional column to sort on
         :return: SQLite Cursor
         """
+        criteria = criteria or {}
         query = f"SELECT * FROM {table_name}"
         if criteria:
             placeholder_str = [
@@ -73,7 +74,7 @@ class DatabaseManager:
             ]
             select_criteria = " AND ".join(placeholder_str)
             query += f" WHERE {select_criteria}"
-        order_placeholder = f" SORT BY {order_by}" if order_by else ""
+        order_placeholder = f" ORDER BY {order_by}" if order_by else ""
         return self._execute(
             query + order_placeholder,
             tuple(criteria.values()),
