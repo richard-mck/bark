@@ -45,6 +45,18 @@ def get_user_input(prompt: str, required=True) -> str:
     return user_input
 
 
+def delete_bookmark() -> str:
+    return get_user_input("Enter bookmark ID")
+
+
+def add_bookmark() -> dict[str, str]:
+    return {
+        "title": get_user_input("Title"),
+        "url": get_user_input("URL"),
+        "notes": get_user_input("Notes (optional)", required=False),
+    }
+
+
 if __name__ == "__main__":
     print("Welcome to Bark!")
     commands.CreateBookmarksTableCommand().execute()
