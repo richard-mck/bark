@@ -29,7 +29,7 @@ def user_choice_is_valid(choice: str, options: dict[str, Option]) -> bool:
     return choice in options or choice.upper() in options
 
 
-def get_user_choice(options: dict[str, Option]):
+def get_user_choice(options: dict[str, Option]) -> Option:
     user_choice = input("Please choose an option: ")
     while not user_choice_is_valid(user_choice, options):
         print("Invalid choice.")
