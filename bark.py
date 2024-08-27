@@ -31,7 +31,7 @@ def user_choice_is_valid(choice: str, options: dict[str, Option]) -> bool:
     return choice in options or choice.upper() in options
 
 
-def get_user_choice(options: dict[str, Option]) -> Option:
+def get_menu_choice(options: dict[str, Option]) -> Option:
     user_choice = input("Please choose an option: ")
     while not user_choice_is_valid(user_choice, options):
         print("Invalid choice.")
@@ -83,9 +83,9 @@ def bark_loop():
         "Q": Option("Quit Bark", commands.QuitCommand()),
     }
     print_options(options)
-    user_choice = get_user_choice(options)
+    menu_choice = get_menu_choice(options)
     clear_screen()
-    user_choice.choose()
+    menu_choice.choose()
     _ = input("Press enter to return to menu")
 
 
