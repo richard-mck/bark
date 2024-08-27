@@ -37,6 +37,14 @@ def get_user_choice(options: dict[str, Option]) -> Option:
     return options[user_choice.upper()]
 
 
+def get_user_input(prompt: str, required=True) -> str:
+    user_input = input(f"{prompt}: ") or None
+    while required and not user_input:
+        print("Insufficient input. Please provide a value")
+        user_input = input(f"{prompt}: ") or None
+    return user_input
+
+
 if __name__ == "__main__":
     print("Welcome to Bark!")
     commands.CreateBookmarksTableCommand().execute()
