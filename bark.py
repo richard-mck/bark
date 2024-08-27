@@ -45,11 +45,11 @@ def get_user_input(prompt: str, required=True) -> str:
     return user_input
 
 
-def delete_bookmark() -> str:
+def get_bookmark_id_for_deletion() -> str:
     return get_user_input("Enter bookmark ID")
 
 
-def add_bookmark() -> dict[str, str]:
+def get_new_bookmark_data() -> dict[str, str]:
     return {
         "title": get_user_input("Title"),
         "url": get_user_input("URL"),
@@ -62,7 +62,9 @@ if __name__ == "__main__":
     commands.CreateBookmarksTableCommand().execute()
     options = {
         "A": Option(
-            "Add a bookmark", commands.AddBookmarksCommand(), preparation=add_bookmark
+            "Add a bookmark",
+            commands.AddBookmarksCommand(),
+            preparation=get_new_bookmark_data,
         ),
         "L": Option("List bookmarks by date", commands.ListBookmarksCommand()),
         "T": Option(
@@ -71,7 +73,7 @@ if __name__ == "__main__":
         "D": Option(
             "Delete bookmark",
             commands.DeleteBookmarksCommand(),
-            preparation=delete_bookmark,
+            preparation=get_bookmark_id_for_deletion,
         ),
         "Q": Option("Quit Bark", commands.QuitCommand()),
     }
