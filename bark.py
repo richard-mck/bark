@@ -59,6 +59,13 @@ def get_new_bookmark_data() -> dict[str, str]:
     }
 
 
+def get_github_import_data() -> dict[str, str]:
+    return {
+        "github_username": get_user_input("Github username"),
+        "keep_timestamps": get_user_input("Keep star timestamp Y/n", required=False) in ("Y", "y", None),
+    }
+
+
 def clear_screen():
     clear_command = "cls" if os.name == "nt" else "clear"
     os.system(clear_command)
@@ -71,10 +78,13 @@ def bark_loop():
             commands.AddBookmarksCommand(),
             preparation=get_new_bookmark_data,
         ),
-        "L": Option("List bookmarks by date", commands.ListBookmarksCommand()),
-        "T": Option(
-            "List bookmarks by title", commands.ListBookmarksCommand(order_by="title")
+        "G": Option(
+            "Import GitHub stars",
+            commands.ImportGitHubStarsCommand(),
+            preparation=get_github_import_data,
         ),
+        "L": Option("List bookmarks by date", commands.ListBookmarksCommand()),
+        "T": Option("List bookmarks by title", commands.ListBookmarksCommand(order_by="title")),
         "D": Option(
             "Delete bookmark",
             commands.DeleteBookmarksCommand(),
