@@ -29,8 +29,8 @@ class AddBookmarksCommand:
     """Given a new bookmark, add this to the table with the current date and time"""
 
     @staticmethod
-    def execute(data: dict[str, str]) -> str:
-        data["date_added"] = datetime.utcnow().isoformat()
+    def execute(data: dict[str, str], timestamp=None) -> str:
+        data["date_added"] = timestamp or datetime.utcnow().isoformat()
         db.add("bookmarks", data)
         return f"Successfully added '{data['title']}' to bookmarks"
 
