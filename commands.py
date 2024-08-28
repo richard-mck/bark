@@ -36,6 +36,38 @@ class AddBookmarksCommand:
         return f"Successfully added '{data['title']}' to bookmarks"
 
 
+class ImportGitHubStarsCommand:
+    """Given a GitHub username, import their starred repos as bookmarks"""
+
+    @staticmethod
+    def _parse_bookmark_info(repo):
+        return {
+            "title": repo["name"],
+            "url": repo["html_url"],
+            "notes": repo["description"],
+        }
+
+    def execute(self, data: dict[str, str]) -> str:
+        repos_imported = 0
+        github_username = data["github_username"]
+        keep_timestamps = data["keep_timestamps"]
+        next_page_of_results = f"https://api.github.com/users/{github_username}/starred"
+
+        while next_page_of_results:
+            response = requests.get(
+                next_page_of_results,
+                headers={"Accept": "application/vnd.github.v3.star+json"},
+            )
+            for star in response.json():
+                timestamp = datetime.strptime(star["starred_at"], "%Y-%m-%dT%H:%M:%SZ") if keep_timestamps else None
+                AddBookmarksCommand.execute(self._parse_bookmark_info(star["repo"]), timestamp=timestamp)
+                repos_imported += 1
+            # Grab the Link header if present, otherwise an empty dict
+            next_page_of_results = response.links.get("next", {}).get("url")
+
+        return f"Successfully imported {repos_imported} GitHub stars from {github_username}"
+
+
 class ListBookmarksCommand:
     """List all bookmarks in the DB, optionally sorting on a specific column"""
 
