@@ -16,7 +16,11 @@ class Option:
     def choose(self):
         data = self.preparation() if self.preparation else None
         message = self.command.execute(data) if data else self.command.execute()
-        print(message)
+        if isinstance(message, str):
+            print(message)
+        else:
+            for item in message:
+                print(item)
 
     def __str__(self):
         return self.display_name
