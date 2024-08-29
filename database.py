@@ -21,10 +21,7 @@ class DatabaseManager:
 
     def create_table(self, table_name: str, columns: dict[str, str]):
         """Given a table name and a dict in the form `{$TYPE: $NAME}`, create a new table"""
-        columns_with_types = [
-            f"{column_name} {column_type}"
-            for column_name, column_type in columns.items()
-        ]
+        columns_with_types = [f"{column_name} {column_type}" for column_name, column_type in columns.items()]
         self._execute(
             f"""
             CREATE TABLE IF NOT EXISTS {table_name}
@@ -44,6 +41,24 @@ class DatabaseManager:
             VALUES ({placeholder_str})
             """,
             data_values,
+        )
+
+    def update(self, table_name: str, data: dict[str, str], criteria: dict[str, str]):
+        """Given a record, update it with new supplied values"""
+        placeholder_str = ", ".join(f"{data_name} = ?" for data_name in data.keys())
+
+        criteria_placeholder = [f"{criteria_name} = ?" for criteria_name in criteria.keys()]
+        update_criteria = " AND ".join(criteria_placeholder)
+
+        update_values = tuple(data.values()) + tuple(criteria.values())
+
+        self._execute(
+            f"""
+            UPDATE {table_name}
+            SET {placeholder_str}
+            WHERE {update_criteria}
+            """,
+            update_values,
         )
 
     def delete(self, table_name: str, data: dict[str, str]):
@@ -69,9 +84,7 @@ class DatabaseManager:
         criteria = criteria or {}
         query = f"SELECT * FROM {table_name}"
         if criteria:
-            placeholder_str = [
-                f"{criteria_name} = ?" for criteria_name in criteria.keys()
-            ]
+            placeholder_str = [f"{criteria_name} = ?" for criteria_name in criteria.keys()]
             select_criteria = " AND ".join(placeholder_str)
             query += f" WHERE {select_criteria}"
         order_placeholder = f" ORDER BY {order_by}" if order_by else ""

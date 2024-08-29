@@ -70,6 +70,13 @@ def get_github_import_data() -> dict[str, str]:
     }
 
 
+def get_bookmark_to_update() -> dict[str, str | dict[str, str]]:
+    bookmark_id = get_user_input("Bookmark ID to update")
+    bookmark_field = get_user_input("Field to update[title, url, notes]")
+    new_value = get_user_input(f"New {bookmark_field}")
+    return {"id": bookmark_id, "update": {bookmark_field: new_value}}
+
+
 def clear_screen():
     clear_command = "cls" if os.name == "nt" else "clear"
     os.system(clear_command)
@@ -89,6 +96,11 @@ def bark_loop():
         ),
         "L": Option("List bookmarks by date", commands.ListBookmarksCommand()),
         "T": Option("List bookmarks by title", commands.ListBookmarksCommand(order_by="title")),
+        "U": Option(
+            "Update bookmark",
+            commands.UpdateBookmarkCommand(),
+            preparation=get_bookmark_to_update,
+        ),
         "D": Option(
             "Delete bookmark",
             commands.DeleteBookmarksCommand(),

@@ -78,6 +78,15 @@ class ListBookmarksCommand:
         return db.select("bookmarks", None, self.order_by).fetchall()
 
 
+class UpdateBookmarkCommand:
+    """Update a single bookmark"""
+
+    @staticmethod
+    def execute(data: dict[str, str | dict[str, str]]) -> str:
+        db.update("bookmarks", data["update"], {"id": data["id"]})
+        return "Successfully updated bookmark!"
+
+
 class DeleteBookmarksCommand:
     """Delete a given bookmark using it's ID"""
 
