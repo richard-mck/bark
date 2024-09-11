@@ -2,6 +2,7 @@
 
 import sys
 import requests
+from abc import ABC, abstractmethod
 from datetime import datetime
 
 from database import DatabaseManager
@@ -9,11 +10,18 @@ from database import DatabaseManager
 db = DatabaseManager("bookmarks.db")
 
 
-class CreateBookmarksTableCommand:
+class Command(ABC):
+    """An abstract base class to ensure all subsequent commands meet interface requirements"""
+
+    @abstractmethod
+    def execute(self, data):
+        raise NotImplementedError
+
+
+class CreateBookmarksTableCommand(Command):
     """Create the DB table for storing the user's bookmarks"""
 
-    @staticmethod
-    def execute():
+    def execute(self, data=None):
         db.create_table(
             "bookmarks",
             {
@@ -26,7 +34,7 @@ class CreateBookmarksTableCommand:
         )
 
 
-class AddBookmarksCommand:
+class AddBookmarksCommand(Command):
     """Given a new bookmark, add this to the table with the current date and time"""
 
     @staticmethod
@@ -36,7 +44,7 @@ class AddBookmarksCommand:
         return f"Successfully added '{data['title']}' to bookmarks"
 
 
-class ImportGitHubStarsCommand:
+class ImportGitHubStarsCommand(Command):
     """Given a GitHub username, import their starred repos as bookmarks"""
 
     @staticmethod
@@ -68,37 +76,34 @@ class ImportGitHubStarsCommand:
         return f"Successfully imported {repos_imported} GitHub stars from {github_username}"
 
 
-class ListBookmarksCommand:
+class ListBookmarksCommand(Command):
     """List all bookmarks in the DB, optionally sorting on a specific column"""
 
     def __init__(self, order_by="date_added"):
         self.order_by = order_by
 
-    def execute(self) -> list:
+    def execute(self, data=None) -> list:
         return db.select("bookmarks", None, self.order_by).fetchall()
 
 
-class UpdateBookmarkCommand:
+class UpdateBookmarkCommand(Command):
     """Update a single bookmark"""
 
-    @staticmethod
-    def execute(data: dict[str, str | dict[str, str]]) -> str:
+    def execute(self, data: dict[str, str | dict[str, str]]) -> str:
         db.update("bookmarks", data["update"], {"id": data["id"]})
         return "Successfully updated bookmark!"
 
 
-class DeleteBookmarksCommand:
+class DeleteBookmarksCommand(Command):
     """Delete a given bookmark using it's ID"""
 
-    @staticmethod
-    def execute(data: str) -> str:
+    def execute(self, data: str) -> str:
         db.delete("bookmarks", {"id": data})
         return "Deleted bookmark"
 
 
-class QuitCommand:
+class QuitCommand(Command):
     """End the programmes execution safely"""
 
-    @staticmethod
-    def execute():
+    def execute(self, data=None):
         sys.exit()

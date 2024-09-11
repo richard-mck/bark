@@ -15,7 +15,7 @@ class Option:
 
     def choose(self):
         data = self.preparation() if self.preparation else None
-        message = self.command.execute(data) if data else self.command.execute()
+        message = self.command.execute(data)
         if isinstance(message, str):
             print(message)
         else:
