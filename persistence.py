@@ -6,6 +6,8 @@ from database import DatabaseManager
 
 
 class PersistenceLayer(ABC):
+    """Create CRUD compliant persistence interfaces"""
+
     @abstractmethod
     def __init__(self):
         raise NotImplementedError
@@ -28,6 +30,8 @@ class PersistenceLayer(ABC):
 
 
 class BookmarksDatabase(PersistenceLayer):
+    """CRUD interface for conventional DBs"""
+
     def __init__(self):
         """Create the DB table for storing the user's bookmarks"""
         self.table_name = "bookmarks"
