@@ -5,9 +5,9 @@ import requests
 from abc import ABC, abstractmethod
 from datetime import datetime
 
-import persistence
+from persistence import BookmarksDatabase
 
-bookmarks_db = persistence.BookmarksDatabase()
+persistence = BookmarksDatabase()
 
 
 class Command(ABC):
@@ -24,7 +24,7 @@ class AddBookmarksCommand(Command):
     @staticmethod
     def execute(data: dict[str, str], timestamp=None) -> (bool, None):
         data["date_added"] = timestamp or datetime.utcnow().isoformat()
-        bookmarks_db.create(data)
+        persistence.create(data)
         return True, None
 
 
@@ -67,14 +67,14 @@ class ListBookmarksCommand(Command):
         self.order_by = order_by
 
     def execute(self, data=None) -> (bool, list):
-        return True, bookmarks_db.list(self.order_by)
+        return True, persistence.list(self.order_by)
 
 
 class UpdateBookmarkCommand(Command):
     """Update a single bookmark"""
 
     def execute(self, data: dict[str, str | dict[str, str]]) -> (bool, None):
-        bookmarks_db.edit(data, data["id"])
+        persistence.edit(data, data["id"])
         return True, None
 
 
@@ -82,7 +82,7 @@ class DeleteBookmarksCommand(Command):
     """Delete a given bookmark using it's ID"""
 
     def execute(self, data: str) -> (bool, None):
-        bookmarks_db.delete(data)
+        persistence.delete(data)
         return True, None
 
 
