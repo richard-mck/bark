@@ -16,14 +16,18 @@ class Option:
     def choose(self):
         data = self.preparation() if self.preparation else None
         message = self.command.execute(data)
-        if isinstance(message, str):
-            print(message)
+        if isinstance(message, list):
+            print_bookmarks(message)
         else:
-            for item in message:
-                print(item)
+            print(message)
 
     def __str__(self):
         return self.display_name
+
+
+def print_bookmarks(bookmarks):
+    for bookmark in bookmarks:
+        print("\t".join(str(field) if field else "" for field in bookmark))
 
 
 def print_options(options: dict[str, Option]):
