@@ -5,9 +5,9 @@ import requests
 from abc import ABC, abstractmethod
 from datetime import datetime
 
-from database import DatabaseManager
+import persistence
 
-db = DatabaseManager("bookmarks.db")
+bookmarks_db = persistence.BookmarksDatabase()
 
 
 class Command(ABC):
@@ -18,29 +18,13 @@ class Command(ABC):
         raise NotImplementedError
 
 
-class CreateBookmarksTableCommand(Command):
-    """Create the DB table for storing the user's bookmarks"""
-
-    def execute(self, data=None):
-        db.create_table(
-            "bookmarks",
-            {
-                "id": "INTEGER PRIMARY KEY AUTOINCREMENT",
-                "title": "TEXT NOT NULL",
-                "url": "TEXT NOT NULL",
-                "notes": "TEXT",
-                "date_added": "TEXT NOT NULL",
-            },
-        )
-
-
 class AddBookmarksCommand(Command):
     """Given a new bookmark, add this to the table with the current date and time"""
 
     @staticmethod
     def execute(data: dict[str, str], timestamp=None) -> (bool, None):
         data["date_added"] = timestamp or datetime.utcnow().isoformat()
-        db.add("bookmarks", data)
+        bookmarks_db.create(data)
         return True, None
 
 
@@ -83,14 +67,14 @@ class ListBookmarksCommand(Command):
         self.order_by = order_by
 
     def execute(self, data=None) -> (bool, list):
-        return True, db.select("bookmarks", None, self.order_by).fetchall()
+        return True, bookmarks_db.list(self.order_by)
 
 
 class UpdateBookmarkCommand(Command):
     """Update a single bookmark"""
 
     def execute(self, data: dict[str, str | dict[str, str]]) -> (bool, None):
-        db.update("bookmarks", data["update"], {"id": data["id"]})
+        bookmarks_db.edit(data, data["id"])
         return True, None
 
 
@@ -98,7 +82,7 @@ class DeleteBookmarksCommand(Command):
     """Delete a given bookmark using it's ID"""
 
     def execute(self, data: str) -> (bool, None):
-        db.delete("bookmarks", {"id": data})
+        bookmarks_db.delete(data)
         return True, None
 
 
