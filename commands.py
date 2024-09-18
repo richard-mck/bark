@@ -38,10 +38,10 @@ class AddBookmarksCommand(Command):
     """Given a new bookmark, add this to the table with the current date and time"""
 
     @staticmethod
-    def execute(data: dict[str, str], timestamp=None) -> str:
+    def execute(data: dict[str, str], timestamp=None) -> (bool, None):
         data["date_added"] = timestamp or datetime.utcnow().isoformat()
         db.add("bookmarks", data)
-        return f"Successfully added '{data['title']}' to bookmarks"
+        return True, None
 
 
 class ImportGitHubStarsCommand(Command):
@@ -55,7 +55,7 @@ class ImportGitHubStarsCommand(Command):
             "notes": repo["description"],
         }
 
-    def execute(self, data: dict[str, str]) -> str:
+    def execute(self, data: dict[str, str]) -> (bool, None):
         repos_imported = 0
         github_username = data["github_username"]
         keep_timestamps = data["keep_timestamps"]
@@ -73,7 +73,7 @@ class ImportGitHubStarsCommand(Command):
             # Grab the Link header if present, otherwise an empty dict
             next_page_of_results = response.links.get("next", {}).get("url")
 
-        return f"Successfully imported {repos_imported} GitHub stars from {github_username}"
+        return True, None
 
 
 class ListBookmarksCommand(Command):
@@ -82,24 +82,24 @@ class ListBookmarksCommand(Command):
     def __init__(self, order_by="date_added"):
         self.order_by = order_by
 
-    def execute(self, data=None) -> list:
-        return db.select("bookmarks", None, self.order_by).fetchall()
+    def execute(self, data=None) -> (bool, list):
+        return True, db.select("bookmarks", None, self.order_by).fetchall()
 
 
 class UpdateBookmarkCommand(Command):
     """Update a single bookmark"""
 
-    def execute(self, data: dict[str, str | dict[str, str]]) -> str:
+    def execute(self, data: dict[str, str | dict[str, str]]) -> (bool, None):
         db.update("bookmarks", data["update"], {"id": data["id"]})
-        return "Successfully updated bookmark!"
+        return True, None
 
 
 class DeleteBookmarksCommand(Command):
     """Delete a given bookmark using it's ID"""
 
-    def execute(self, data: str) -> str:
+    def execute(self, data: str) -> (bool, None):
         db.delete("bookmarks", {"id": data})
-        return "Deleted bookmark"
+        return True, None
 
 
 class QuitCommand(Command):

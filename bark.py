@@ -8,18 +8,19 @@ import commands
 class Option:
     """Class to contain menu options for display"""
 
-    def __init__(self, display_name: str, command, preparation=None):
+    def __init__(self, display_name: str, command, preparation=None, status_message="{result}"):
         self.display_name = display_name
         self.command = command
         self.preparation = preparation
+        self.status_message = status_message
 
     def choose(self):
         data = self.preparation() if self.preparation else None
-        message = self.command.execute(data)
+        success, message = self.command.execute(data)
         if isinstance(message, list):
             print_bookmarks(message)
         else:
-            print(message)
+            print(self.status_message)
 
     def __str__(self):
         return self.display_name
@@ -92,11 +93,13 @@ def bark_loop():
             "Add a bookmark",
             commands.AddBookmarksCommand(),
             preparation=get_new_bookmark_data,
+            status_message="Successfully added bookmark",
         ),
         "G": Option(
             "Import GitHub stars",
             commands.ImportGitHubStarsCommand(),
             preparation=get_github_import_data,
+            status_message="Successfully imported GitHub stars",
         ),
         "L": Option("List bookmarks by date", commands.ListBookmarksCommand()),
         "T": Option("List bookmarks by title", commands.ListBookmarksCommand(order_by="title")),
@@ -104,11 +107,13 @@ def bark_loop():
             "Update bookmark",
             commands.UpdateBookmarkCommand(),
             preparation=get_bookmark_to_update,
+            status_message="Successfully updated bookmark",
         ),
         "D": Option(
             "Delete bookmark",
             commands.DeleteBookmarksCommand(),
             preparation=get_bookmark_id_for_deletion,
+            status_message="Deleted bookmark",
         ),
         "Q": Option("Quit Bark", commands.QuitCommand()),
     }
