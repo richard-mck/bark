@@ -127,6 +127,5 @@ def bark_loop():
 if __name__ == "__main__":
     clear_screen()
     print("Welcome to Bark!")
-    commands.CreateBookmarksTableCommand().execute()
     while True:
         bark_loop()

@@ -47,7 +47,7 @@ class BookmarksDatabase(PersistenceLayer):
         self.db.add(self.table_name, data)
 
     def list(self, order_by):
-        return self.db.select(self.table_name, None, order_by).fetchall()
+        return self.db.select(self.table_name, order_by=order_by).fetchall()
 
     def edit(self, bookmark_id, data):
         self.db.update(self.table_name, data["update"], {"id": bookmark_id})
